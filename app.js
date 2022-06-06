@@ -1,53 +1,34 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var bodyParser = require("body-parser");  // bodyParser needed to parse through POST requests
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var cors = require('cors');
+// initial setup: 
+const express = require('express');
+const app = express(); 
+const PORT = 5000; 
 
-var indexRouter = require('./routes/index');
-var testRouter = require('./routes/test'); // test API path 
-var orderConfirmationRouter = require('./routes/order-confirmation'); // order confirmed API path 
+// routes: 
+const indexRoute = require('./routes/index');
+const testRoute = require('./routes/test');
+const orderConfirmedRoute = require('./routes/order-confirmed');
+const menuRoute = require('./routes/menu');
+const purchaseRoute = require('./routes/purchase');
+const newsletterRoute = require('./routes/newsletter');
 
-var app = express();
+// middleware:
+// functions that get called before a request is made 
+// called using app.use
+// if you call it in the main app.js file, 
+// the middle ware is enabled for all requests
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// enable JSON use:
+app.use(express.json()); 
 
-app.use(cors()); // make sure cors is enabled so that front and backend servers can communicate with each other 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+// routes:
+app.use('/', indexRoute);
+app.use('/test', testRoute);
+app.use('/order-confirmed', orderConfirmedRoute);
+app.use('/menu', menuRoute); 
+app.use('/purchase', purchaseRoute); 
+app.use('/newsletter', newsletterRoute); 
 
-//Here we are configuring express to use body-parser as middle-ware.
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-
-app.use('/', indexRouter);
-app.use('/test', testRouter);
-app.use('/order-confirmed', orderConfirmationRouter);
-
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-module.exports = app;
+// testing: 
+app.listen(PORT, () => {
+  console.log("server is running");
+})
