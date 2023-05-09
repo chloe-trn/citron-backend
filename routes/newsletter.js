@@ -10,11 +10,11 @@ router.post('/', (req,res) => {
 
             function postEmail() { 
 
-                // insert email to db
-                let insertEmail = `INSERT INTO newsletter (email) VALUES('${email}')`
+                // insert email to db using parameterized query
+                let insertEmail = `INSERT INTO newsletter (email) VALUES(?)`
 
                 return new Promise((resolve,reject) => {
-                    db.query(insertEmail, (err, res) => {   
+                    db.query(insertEmail, [email], (err, res) => {   
                         if (err) {
                             reject(err)
                         } else {

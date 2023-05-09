@@ -14,9 +14,9 @@ router.post('/', (req,res) => {
     return new Promise((resolve,reject) => {
 
       // post current transaction to db
-      let insertPurchase = `INSERT INTO purchase (first_name,last_name,phone_number,purchase_time) VALUES('${firstName}', '${lastName}', '${phoneNumber}',NOW())`;
+      let insertPurchase = `INSERT INTO purchase (first_name, last_name, phone_number, purchase_time) VALUES (?, ?, ?, NOW())`;
 
-      db.query(insertPurchase, (err, res) => {   
+      db.query(insertPurchase, [firstName, lastName, phoneNumber], (err, res) => {   
         if (err) {
           reject(err)
         } else {
@@ -36,12 +36,19 @@ router.post('/', (req,res) => {
       let productIDs = Object.values(items);
       let quantities = Object.values(quantity);
 
-      // insert individual item info into db: 
+      let values = [];
+
+      // create an array of placeholders and values for each item
+      for (let i = 0; i < productIDs.length; i++) {
+        values.push([purchaseID, productIDs[i], quantities[i]]);
+      }
+
       for (let i = 0; i < productIDs.length; i++) {
 
-        let insertPurchaseProduct = `INSERT INTO purchase_product VALUES(${purchaseID},${productIDs[i]},${quantities[i]})`;
+        // insert individual item info into db with a single query
+        let insertPurchaseProduct = `INSERT INTO purchase_product (purchase_id, product_id, quantity) VALUES ?`;
 
-        db.query(insertPurchaseProduct, (err, res) => {   
+        db.query(insertPurchaseProduct, [values], (err, res) => {   
           if (err) {
             reject(err)
           } else {
