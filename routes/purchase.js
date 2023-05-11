@@ -7,16 +7,16 @@ const db = require('../database')
 router.post('/', (req,res) => {
   
   // get info from client
-	let { firstName, lastName, phoneNumber, items, quantity} = req.body
+	let { items, quantity} = req.body
 
   function postTransaction() {
 
     return new Promise((resolve,reject) => {
 
       // post current transaction to db
-      let insertPurchase = `INSERT INTO purchase (first_name, last_name, phone_number, purchase_time) VALUES (?, ?, ?, NOW())`;
+      let insertPurchaseTime = `INSERT INTO purchase (purchase_time) VALUES (NOW())`;
 
-      db.query(insertPurchase, [firstName, lastName, phoneNumber], (err, res) => {   
+      db.query(insertPurchaseTime, (err, res) => {   
         if (err) {
           reject(err)
         } else {
