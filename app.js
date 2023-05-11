@@ -10,7 +10,6 @@ const orderConfirmedRoute = require('./routes/order-confirmed');
 const menuRoute = require('./routes/menu');
 const purchaseRoute = require('./routes/purchase');
 const newsletterRoute = require('./routes/newsletter');
-const stripeKeyRoute = require('./routes/stripe-key');
 const checkoutSession= require('./routes/checkout-session');
 
 // enable CORS: 
@@ -25,7 +24,6 @@ app.use('/order-confirmed', orderConfirmedRoute);
 app.use('/menu', menuRoute); 
 app.use('/purchase', purchaseRoute); 
 app.use('/newsletter', newsletterRoute); 
-app.use('/stripe-key', stripeKeyRoute); 
 app.use('/checkout-session', checkoutSession); 
 
 // testing: 
