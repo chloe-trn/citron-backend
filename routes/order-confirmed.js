@@ -1,26 +1,16 @@
-const express = require('express')
-const router = express.Router()
+require('dotenv').config();
+const express = require('express');
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY)
+const router = express.Router();
 
-// check if Stripe payment is successful: 
-router.post('/', (req,res) => {
-	let { message, id } = req.body
-	try {
-		if(message === 'Stripe Payment Method Successfully Created'){
-			res.json({
-				message: "Payment Successful",
-				success: true
-			})
-		}
-		else {
-			throw new Error('Strip Payment Method Not Successful')
-		}
-	} catch (err) {
-		res.json({
-			message: `${err}`,
-			success: false
-		})
-	}
-})
+router.get('/', async (req, res) => {
+	const sessionId = String(req.query.session_id)
+	const session = await stripe.checkout.sessions.retrieve(sessionId);
+	const customerName = session.customer_details.name;
 
-module.exports = router
-  
+	console.log(session)
+
+	res.json({customerName: customerName});
+});
+
+module.exports = router;
